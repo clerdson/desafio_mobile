@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "907573825936",
+    "project_id": "bycoders-bc43d",
+    "storage_bucket": "bycoders-bc43d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:907573825936:android:eef875c22928121d76a315",
+        "android_client_info": {
+          "package_name": "com.example.mariocart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "907573825936-j25k2epk43ocpf0ckj8l7k8dfmviaq1r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqu56h5RzawdkPkmyfOvhzHTeWh3bARSA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "907573825936-j25k2epk43ocpf0ckj8l7k8dfmviaq1r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
