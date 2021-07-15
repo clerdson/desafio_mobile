@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_builder.dart';
+import 'package:mariocart/page/maps.dart';
 import 'package:mariocart/page/registrate.dart';
 import 'package:mariocart/page/sign.dart';
 
@@ -98,6 +99,16 @@ class _MyHomePageState extends State<MyHomePage> {
               backgroundColor: Colors.orange,
               text: 'Sign In',
               onPressed: () => _pushPage(context, SignInPage()),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(16),
+            alignment: Alignment.center,
+            child: SignInButtonBuilder(
+              icon: Icons.verified_user,
+              backgroundColor: Colors.green,
+              text: 'Google Maps',
+              onPressed: () => _pushPage(context, MyApp2()),
             ),
           ),
         ],

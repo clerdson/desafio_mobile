@@ -1,8 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.mariocart">
+
    <application
         android:label="mariocart"
         android:icon="@mipmap/ic_launcher">
+
+         <!-- TODO: Add your API key here -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyD0AQSiP57RNEs82YfbbPA1fJnJAxs-phM"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
