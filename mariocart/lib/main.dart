@@ -7,10 +7,10 @@ import 'package:mariocart/page/maps.dart';
 import 'package:mariocart/page/registrate.dart';
 import 'package:mariocart/page/sign.dart';
 
-void main() async{
-    WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
- 
+
   runApp(MyApp());
 }
 
@@ -38,8 +38,6 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
- 
-
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
@@ -49,21 +47,26 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
- 
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Location location = new Location();
+  LocationData _currentPosition;
+  PermissionStatus _permissionGranted;
 
   void _pushPage(BuildContext context, Widget page) {
     Navigator.of(context) /*!*/ .push(
       MaterialPageRoute<void>(builder: (_) => page),
     );
   }
-
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getLoc();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,43 +85,93 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child:  Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.all(16),
-            alignment: Alignment.center,
-            child: SignInButtonBuilder(
-              icon: Icons.person_add,
-              backgroundColor: Colors.indigo,
-              text: 'Registration',
-              onPressed: () => _pushPage(context, RegisterPage()),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.all(16),
+              alignment: Alignment.center,
+              child: SignInButtonBuilder(
+                icon: Icons.person_add,
+                backgroundColor: Colors.indigo,
+                text: 'Registration',
+                onPressed: () => _pushPage(context, RegisterPage()),
+              ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(16),
-            alignment: Alignment.center,
-            child: SignInButtonBuilder(
-              icon: Icons.verified_user,
-              backgroundColor: Colors.orange,
-              text: 'Sign In',
-              onPressed: () => _pushPage(context, SignInPage()),
+            Container(
+              padding: const EdgeInsets.all(16),
+              alignment: Alignment.center,
+              child: SignInButtonBuilder(
+                icon: Icons.verified_user,
+                backgroundColor: Colors.orange,
+                text: 'Sign In',
+                onPressed: () => _pushPage(context, SignInPage()),
+              ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(16),
-            alignment: Alignment.center,
-            child: SignInButtonBuilder(
-              icon: Icons.verified_user,
-              backgroundColor: Colors.green,
-              text: 'Google Maps',
-              onPressed: () => _pushPage(context, MyApp2()),
+            Container(
+              padding: const EdgeInsets.all(16),
+              alignment: Alignment.center,
+              child: SignInButtonBuilder(
+                icon: Icons.verified_user,
+                backgroundColor: Colors.green,
+                text: 'Google Maps',
+                onPressed: ()=>_pushPage(context,MyApp2())
+              ),
             ),
-          ),
-        ],
+            Container(
+              padding: const EdgeInsets.all(16),
+              alignment: Alignment.center,
+              child: SignInButtonBuilder(
+                icon: Icons.verified_user,
+                backgroundColor: Colors.red,
+                text: 'Maps requirerments',
+                onPressed: _getLoc,
+              ),
+            ),
+          ],
+        ),
       ),
-      ),
-     // This trailing comma makes auto-formatting nicer for build methods.
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  _getLoc() async {
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+         showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // retorna um objeto do tipo Dialog
+        return AlertDialog(
+          title: new Text("Considere map reuired"),
+          content: new Text("mapa presisa da sua permissão "),
+          actions: <Widget>[
+            // define os botões na base do dialogo
+            new FlatButton(
+              child: new Text("Fechar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
   }
 }

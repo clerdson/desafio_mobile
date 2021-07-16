@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -13,13 +15,12 @@ class _MyAppState extends State<MyApp2> {
   PermissionStatus _permissionGranted;
   GoogleMapController _controller;
   LatLng _initialcameraposition = LatLng(0.5937, 0.9629);
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{}; 
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    getLoc();
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -37,63 +38,66 @@ class _MyAppState extends State<MyApp2> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Google Office Locations'),
-            backgroundColor: Colors.green[700],
+        appBar: AppBar(
+          title: const Text('Google Office Locations'),
+          backgroundColor: Colors.green[700],
+        ),
+        body: GoogleMap(
+          onMapCreated: _onMapCreated,
+          myLocationButtonEnabled: true,
+            onCameraMove: (position) {
+        print(position);
+        _initialcameraposition = LatLng(position.target.latitude, position.target.longitude);
+      },
+          initialCameraPosition: CameraPosition(
+            target: LatLng(0.5937, 0.9629),
+            zoom: 8,
           ),
-          body: GoogleMap(
-            onMapCreated: _onMapCreated,
-            myLocationButtonEnabled: true,
-            initialCameraPosition: CameraPosition(
-              target: LatLng(0.5937, 0.9629),
-              zoom: 8,
-            ),
-          ),
-          floatingActionButton: FloatingActionButton.extended(
-              label: Text('go to lacation'),
-              onPressed: () {
-                location.onLocationChanged.listen((LocationData l) {
-                  _controller.animateCamera(
-                    CameraUpdate.newCameraPosition(
-                      CameraPosition(
-                          target: LatLng(l.latitude, l.longitude), zoom: 15.0),
-                    ),
-                  );
-                });
-              })),
+           markers: Set<Marker>.of(markers.values)
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          label: Text('go to lacation'),
+          onPressed: () {
+
+             _add();
+
+
+            location.onLocationChanged.listen(
+              (LocationData l) {
+                _controller.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(
+                        target: LatLng(l.latitude, l.longitude), zoom: 20.0),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+
+      ),
     );
   }
+    void _add() {
+    // ...
+var markerIdVal = Random();
+    final MarkerId markerId = MarkerId(markerIdVal.toString());
+    final Marker marker = Marker(
+      markerId: markerId,
+      position: _initialcameraposition,
+      infoWindow: InfoWindow(title: 'MY LOCATION', snippet: 'this is my LOCATION'),
+      onTap: () {
+        // ...
+      },
+      onDragEnd: (LatLng position) {
+        //...
+      },
+    );
 
-  getLoc() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
-
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-
-    _currentPosition = await location.getLocation();
-    _initialcameraposition =
-        LatLng(_currentPosition.latitude, _currentPosition.longitude);
-    location.onLocationChanged.listen((LocationData currentLocation) {
-      print("${currentLocation.longitude} : ${currentLocation.longitude}");
-      setState(() {
-        _currentPosition = currentLocation;
-        _initialcameraposition =
-            LatLng(_currentPosition.latitude, _currentPosition.longitude);
-      });
+    setState(() {
+      markers[markerId] = marker;
     });
   }
 }
+
+
