@@ -4,6 +4,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_builder.dart';
 import 'package:location/location.dart';
+import 'package:mariocart/controllers/controller.dart';
 import 'package:mariocart/page/maps.dart';
 import 'package:mariocart/page/registrate.dart';
 import 'package:mariocart/page/sign.dart';
@@ -13,7 +14,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 // Elsewhere in your code
- //  FirebaseCrashlytics.instance.crash();
+  //  FirebaseCrashlytics.instance.crash();
   runApp(MyApp());
 }
 
@@ -64,13 +65,14 @@ class _MyHomePageState extends State<MyHomePage> {
       MaterialPageRoute<void>(builder: (_) => page),
     );
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _getLoc();
   }
-
+final MyController  controller = Get.put(MyController());
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -80,89 +82,129 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text("MyApp"),
-        actions: <Widget>[
-    IconButton(
-      icon: Icon(
-        Icons.settings,
-        color: Colors.white,
-      ),
-      onPressed: () {
-        FirebaseAuth.instance.signOut();
-         Get.snackbar(
-            "Deslogado",
-            "seu login acabou",
-          );
-        // do something
-      },
-    )
-  ],
-      ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              padding: const EdgeInsets.all(16),
-              alignment: Alignment.center,
-              child: SignInButtonBuilder(
-                icon: Icons.person_add,
-                backgroundColor: Colors.indigo,
-                text: 'Registration',
-                onPressed: () => _pushPage(context, RegisterPage()),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(16),
-              alignment: Alignment.center,
-              child: SignInButtonBuilder(
-                icon: Icons.verified_user,
-                backgroundColor: Colors.orange,
-                text: 'Sign In',
-                onPressed: () => _pushPage(context, SignInPage()),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(16),
-              alignment: Alignment.center,
-              child: SignInButtonBuilder(
-                icon: Icons.verified_user,
-                backgroundColor: Colors.green,
-                text: 'Google Maps',
-                onPressed: ()=>_pushPage(context,MyApp2())
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(16),
-              alignment: Alignment.center,
-              child: SignInButtonBuilder(
-                icon: Icons.verified_user,
-                backgroundColor: Colors.red,
-                text: 'Maps requirerments',
-                onPressed: _getLoc,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(16),
-              alignment: Alignment.center,
-              child: SignInButtonBuilder(
-                icon: Icons.verified_user,
-                backgroundColor: Colors.red,
-                text: 'Firebase crashlylics',
-                onPressed: (){
-  FirebaseCrashlytics.instance.crash();
-                         
-                },
-              ),
-            ),
+        child: Stack(children: [
           
-          ],
-        ),
+          Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.45),
+            child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                padding: const EdgeInsets.all(16),
+                alignment: Alignment.center,
+                child: SignInButtonBuilder(
+                  icon: Icons.person_add,
+                  backgroundColor: Colors.indigo,
+                  text: 'Registration',
+                  onPressed: (){
+                    _pushPage(context, RegisterPage());
+                    print('object');
+                    }
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(16),
+                alignment: Alignment.center,
+                child: SignInButtonBuilder(
+                  icon: Icons.verified_user,
+                  backgroundColor: Colors.orange,
+                  text: 'Sign In',
+                  onPressed: () => _pushPage(context, SignInPage()),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(16),
+                alignment: Alignment.center,
+                child: SignInButtonBuilder(
+                    icon: Icons.verified_user,
+                    backgroundColor: Colors.green,
+                    text: 'Google Maps',
+                    onPressed: () => _pushPage(context, MyApp2())),
+              ),
+              Container(
+                padding: const EdgeInsets.all(16),
+                alignment: Alignment.center,
+                child: SignInButtonBuilder(
+                  icon: Icons.verified_user,
+                  backgroundColor: Colors.red,
+                  text: 'Maps requirerments',
+                  onPressed: _getLoc,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(16),
+                alignment: Alignment.center,
+                child: SignInButtonBuilder(
+                  icon: Icons.verified_user,
+                  backgroundColor: Colors.red,
+                  text: 'Firebase crashlylics',
+                  onPressed: () {
+                    FirebaseCrashlytics.instance.crash();
+                  },
+                ),
+              ),
+            ],
+          
+          
+                  ),
+          ),
+        
+        GetX<MyController>(
+           initState:(state){
+             Future.delayed(Duration(seconds: 4), () {
+  // 5s over, navigate to a new page
+ controller.posicaoDaLogo();
+});
+
+              },
+              builder: (_)=> 
+                 AnimatedPositioned(
+                           
+              
+                           duration: Duration(seconds: 2),
+                           top: _.bottom.toDouble(),
+                           
+              
+              
+                        child:   Container(
+                        child: Center(child: Image.asset('mario.png'),),
+              
+              
+                       )
+                          ),
+              ),
+               GetX<MyController>(
+           initState:(state){
+             Future.delayed(Duration(seconds: 4), () {
+  // 5s over, navigate to a new page
+ controller.posicaoDaLogo2();
+});
+
+              },
+              builder: (_)=> 
+                 AnimatedPositioned(
+                           
+              
+                           duration: Duration(seconds: 2),
+                           right: _.left.toDouble(),
+                           
+              
+              
+                        child:   Container(
+                          width: 800,
+                          height: 800,
+                        child: Center(child: Image.asset('mario2.png'),),
+              
+              
+                       )
+                          ),
+              ),
+      
+      
+        
+        ],),
       ),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
@@ -182,25 +224,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _permissionGranted = await location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
-         showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // retorna um objeto do tipo Dialog
-        return AlertDialog(
-          title: new Text("Considere map reuired"),
-          content: new Text("mapa presisa da sua permissão "),
-          actions: <Widget>[
-            // define os botões na base do dialogo
-            new FlatButton(
-              child: new Text("Fechar"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // retorna um objeto do tipo Dialog
+          return AlertDialog(
+            title: new Text("Considere map reuired"),
+            content: new Text("mapa presisa da sua permissão "),
+            actions: <Widget>[
+              // define os botões na base do dialogo
+              new FlatButton(
+                child: new Text("Fechar"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
         return;

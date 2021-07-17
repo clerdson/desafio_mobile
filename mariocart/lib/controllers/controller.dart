@@ -8,7 +8,20 @@ class MyController extends GetxController {
   final _num = 0.obs;
   get num => this._num.value;
   set num(value) => this._num.value = value;
+   final _bottom = 0.obs;
+  get bottom => this._num.value;
+  set bottom(value) => this._num.value = value;
+    final _left = 0.obs;
+  get left => this._left.value;
+  set left(value) => this._left.value = value;
     final FirebaseAuth _auth = FirebaseAuth.instance;
+
+    posicaoDaLogo(){
+      this.bottom = 100;
+    }
+     posicaoDaLogo2(){
+      this.left = -600;
+    }
  // Example code for registration.
  register(TextEditingController email,TextEditingController pass) async {
    
