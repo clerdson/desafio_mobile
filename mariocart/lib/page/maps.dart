@@ -1,8 +1,10 @@
 import 'dart:math';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+
 
 class MyApp2 extends StatefulWidget {
   @override
@@ -16,7 +18,8 @@ class _MyAppState extends State<MyApp2> {
   GoogleMapController _controller;
   LatLng _initialcameraposition = LatLng(0.5937, 0.9629);
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{}; 
-
+  final ref = FirebaseDatabase.instance.reference();
+  var retrieve;
   @override
   void initState() {
     // TODO: implement initState
@@ -36,6 +39,7 @@ class _MyAppState extends State<MyApp2> {
 
   @override
   Widget build(BuildContext context) {
+   
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -58,9 +62,12 @@ class _MyAppState extends State<MyApp2> {
         floatingActionButton: FloatingActionButton.extended(
           label: Text('go to lacation'),
           onPressed: () {
-
+            ref.child('position').set({
+              "lat":_initialcameraposition.latitude,
+              "long":_initialcameraposition.longitude
+              });
              _add();
-
+             
 
             location.onLocationChanged.listen(
               (LocationData l) {
@@ -68,10 +75,12 @@ class _MyAppState extends State<MyApp2> {
                   CameraUpdate.newCameraPosition(
                     CameraPosition(
                         target: LatLng(l.latitude, l.longitude), zoom: 20.0),
+
                   ),
                 );
               },
             );
+            
           },
         ),
 
@@ -87,16 +96,54 @@ var markerIdVal = Random();
       position: _initialcameraposition,
       infoWindow: InfoWindow(title: 'MY LOCATION', snippet: 'this is my LOCATION'),
       onTap: () {
+        //
         // ...
+        showPositionOnFirebase();
+       
       },
       onDragEnd: (LatLng position) {
-        //...
+       //...
+        
       },
     );
 
     setState(() {
       markers[markerId] = marker;
     });
+  }
+  showPositionOnFirebase(){
+
+     ref.child("position").once().then((DataSnapshot data){
+                  print(data.value);
+                  print(data.key);
+                  setState(() {
+                    retrieve = data.value;
+                  });
+                });
+                print(retrieve);
+
+                showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // retorna um objeto do tipo Dialog
+        return AlertDialog(
+          title: new Text("Essa e sua posicao"),
+          content: new Text("esta e a latitude $retrieve['lat'],esta e a longitude $retrieve['long']"??"ainda nao foi gravado"),
+          actions: <Widget>[
+            // define os botões na base do dialogo
+            new FlatButton(
+              child: new Text("Fechar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+
+
+
   }
 }
 
