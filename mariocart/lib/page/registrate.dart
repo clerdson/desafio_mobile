@@ -3,13 +3,19 @@
 // found in the LICENSE file.
 
 // @dart=2.9
-
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_signin_button/button_builder.dart';
 
-final FirebaseAuth _auth = FirebaseAuth.instance;
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:mariocart/controllers/controller.dart';
+
+
+import 'package:get/get.dart';
+import 'package:mariocart/main.dart';
+
+
+
+
+
 
 /// Entrypoint example for registering via Email/Password.
 class RegisterPage extends StatefulWidget {
@@ -24,10 +30,13 @@ class _RegisterPageState extends State<RegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
+ 
   bool _success;
   String _userEmail = '';
 
+
+
+ final MyController  controller = Get.put(MyController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,20 +80,14 @@ class _RegisterPageState extends State<RegisterPage> {
                       backgroundColor: Colors.blueGrey,
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
-                          await _register();
+                          controller.register(_emailController,_passwordController);
+                          Get.to(MyHomePage());
                         }
                       },
                       text: 'Register',
                     ),
                   ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(_success == null
-                        ? ''
-                        : (_success
-                            ? 'Successfully registered $_userEmail'
-                            : 'Registration failed')),
-                  )
+                 
                 ],
               ),
             ),
@@ -100,21 +103,5 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  // Example code for registration.
-  Future<void> _register() async {
-    final User user = (await _auth.createUserWithEmailAndPassword(
-      email: _emailController.text,
-      password: _passwordController.text,
-    ))
-        .user;
-       
-    if (user != null) {
-      setState(() {
-        _success = true;
-        _userEmail = user.email;
-      });
-    } else {
-      _success = false;
-    }
-  }
+ 
 }
