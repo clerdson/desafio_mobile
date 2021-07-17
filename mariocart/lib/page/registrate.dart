@@ -4,6 +4,7 @@
 
 // @dart=2.9
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_signin_button/button_builder.dart';
@@ -106,6 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
       password: _passwordController.text,
     ))
         .user;
+       
     if (user != null) {
       setState(() {
         _success = true;

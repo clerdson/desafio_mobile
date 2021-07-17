@@ -1,16 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_builder.dart';
 import 'package:location/location.dart';
 import 'package:mariocart/page/maps.dart';
 import 'package:mariocart/page/registrate.dart';
 import 'package:mariocart/page/sign.dart';
+import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+// Elsewhere in your code
+ //  FirebaseCrashlytics.instance.crash();
   runApp(MyApp());
 }
 
@@ -18,7 +21,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -80,7 +83,23 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text("e"),
+        title: Text("MyApp"),
+        actions: <Widget>[
+    IconButton(
+      icon: Icon(
+        Icons.settings,
+        color: Colors.white,
+      ),
+      onPressed: () {
+        FirebaseAuth.instance.signOut();
+         Get.snackbar(
+            "Deslogado",
+            "seu login acabou",
+          );
+        // do something
+      },
+    )
+  ],
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -128,6 +147,20 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: _getLoc,
               ),
             ),
+            Container(
+              padding: const EdgeInsets.all(16),
+              alignment: Alignment.center,
+              child: SignInButtonBuilder(
+                icon: Icons.verified_user,
+                backgroundColor: Colors.red,
+                text: 'Firebase crashlylics',
+                onPressed: (){
+  FirebaseCrashlytics.instance.crash();
+                         
+                },
+              ),
+            ),
+          
           ],
         ),
       ),

@@ -30,7 +30,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_core: "^0.7.0"
   firebase_auth: "^0.20.0"
-
+  firebase_analytics: ^5.0.11
+  firebase_crashlytics: "^0.4.0+1"
+  
   flutter_signin_button: ^1.0.0
   google_sign_in: "^4.5.1"
 
@@ -38,6 +40,8 @@ dependencies:
   
   
   location: ^3.0.0
+
+  get: ^4.1.4
 
   
   
